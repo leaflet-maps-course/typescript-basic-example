@@ -1,0 +1,34 @@
+{
+  "name": "leaflet-map-template",
+  "version": "1.0.0",
+  "description": "Leaflet Map Template to use in differents proyects\"",
+  "main": "index.js",
+  "author": "Anartz Mugika Ledo <mugan86@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx parcel src/main/index.html --open",
+    "build": "npx parcel build src/main/index.html --public-url '.'",
+    "lint": "eslint . --ext .ts"
+  },
+  "keywords": [
+    "leaflet",
+    "typescript",
+    "maps",
+    "mapas",
+    "geojson",
+    "polyline",
+    "marker",
+    "points"
+  ],
+  "dependencies": {
+    "leaflet": "^1.9.2",
+    "typescript": "4.8.4"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.0",
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "@typescript-eslint/parser": "^5.1.0",
+    "eslint": "^8.0.1",
+    "parcel-bundler": "^1.12.5"
+  }
+}
