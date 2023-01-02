@@ -3,11 +3,12 @@ import { Map } from 'leaflet';
 import { startMapTemplate } from '../assets/template/content';
 import { tileLayerSelect } from '../config/functions';
 import { boundsData } from './bounds-control';
+import { PLACES_LIST_LOCATIONS } from './locations';
 
 
 startMapTemplate(document, 'Plantilla - Mapa con Typescript');
 
-const mymap = new Map('map').setView([43.174250529842205, -2.4128723144531254], 13);
+const mymap = new Map('map').setView(PLACES_LIST_LOCATIONS.ADDIS_ABEBA_ETIOPIA as [number, number], 13);
 
 // Data to add in control
 const mapBounds = {
