@@ -1,4 +1,4 @@
-import { latLngBounds, Map } from 'leaflet';
+import { Map } from 'leaflet';
 import { startMapTemplate } from '../assets/template/content';
 import { tileLayerSelect } from '../config/functions';
 import { boundsData } from './bounds-control';
@@ -6,27 +6,24 @@ import { boundsData } from './bounds-control';
 
 startMapTemplate(document, 'Plantilla - Mapa con Typescript');
 
-const mymap = new Map('map').setView([43.3082977, -1.9837398], 10);
+const mymap = new Map('map').setView([43.174250529842205, -2.4128723144531254], 13);
 
 // Data to add in control
 const mapBounds = {
     northEast: {
-        lat: 43.21180708932604,
-        lng: -2.340774536132813
+        lat: mymap.getBounds().getNorthEast().lat,
+        lng: mymap.getBounds().getNorthEast().lng
     },
     southWest: {
-        lat: 43.13669397035837,
-        lng: -2.484970092773438
+        lat: mymap.getBounds().getSouthWest().lat,
+        lng: mymap.getBounds().getSouthWest().lng
     },
 };
 
-// Use data to center camera with correct zoom and position
-const fitBoundsData = latLngBounds(mapBounds.southWest, mapBounds.northEast)
+console.log(`${mapBounds.southWest.lat},${mapBounds.southWest.lng},${mapBounds.northEast.lat}, ${mapBounds.northEast.lng}`);
 
 boundsData({
     bounds: mapBounds
 }).addTo(mymap);
-
-mymap.fitBounds(fitBoundsData);
 
 tileLayerSelect().addTo(mymap);
