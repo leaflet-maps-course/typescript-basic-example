@@ -30,18 +30,15 @@ boundsData({
 
 tileLayerSelect().addTo(mymap);
 
-// Define boundaries box with dynamic limits use control reference
-const bbox = `${mymap.getBounds().getSouth()},${mymap
-    .getBounds()
-    .getWest()},${mymap.getBounds().getNorth()},${mymap.getBounds().getEast()}`;
-  
-  const queryOverPass = `
-  [bbox:${bbox}]
-  [out:json][timeout:25];( 
-  node["amenity"="drinking_water"]; 
-  node["natural"="spring"]; 
-  node["drinking_water"="yes"]; 
-  );out center;>;`
+const queryOverPass = 
+`[out:json][timeout:25];
+  area(id:3600346457)->.searchArea;
+  (
+  node["natural"="peak"](area.searchArea);
+  way["natural"="peak"](area.searchArea);
+  relation["natural"="peak"](area.searchArea);
+  );
+  out body;`;
 
   axios
   .post("https://overpass-api.de/api/interpreter", queryOverPass)
