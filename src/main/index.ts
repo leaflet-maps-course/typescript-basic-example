@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Map } from 'leaflet';
+import { Map, marker } from 'leaflet';
 import { startMapTemplate } from '../assets/template/content';
 import { tileLayerSelect } from '../config/functions';
 import { boundsData } from './bounds-control';
@@ -8,7 +8,7 @@ import { PLACES_LIST_LOCATIONS } from './locations';
 
 startMapTemplate(document, 'Plantilla - Mapa con Typescript');
 
-const mymap = new Map('map').setView(PLACES_LIST_LOCATIONS.ADDIS_ABEBA_ETIOPIA as [number, number], 13);
+const mymap = new Map('map').setView(PLACES_LIST_LOCATIONS.HONOLULU_HAWAI_EEUU as [number, number], 13);
 
 // Data to add in control
 const mapBounds = {
@@ -43,6 +43,10 @@ const bbox = `${mymap.getBounds().getSouth()},${mymap
   node["drinking_water"="yes"]; 
   );out center;>;`
 
-axios
+  axios
   .post("https://overpass-api.de/api/interpreter", queryOverPass)
-  .then(({ data }) => console.log(data));
+  .then(({ data }) => {
+    data.elements.map((element: {lat: number, lon: number, id: number}) => {
+      marker([element.lat, element.lon]).addTo(mymap).bindPopup(String(element.id));
+    })
+  });
