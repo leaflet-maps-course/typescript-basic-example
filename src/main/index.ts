@@ -35,7 +35,7 @@ boundsData({
 tileLayerSelect().addTo(mymap);
 
 const queryOverPass = `[out:json][timeout:25];
-  area(id:3602851736)->.searchArea;
+  area(id:3600349015)->.searchArea;
   (
   node["natural"="peak"](area.searchArea);
   way["natural"="peak"](area.searchArea);
@@ -48,15 +48,28 @@ const results: Array<{ lat: number; lon: number }> = [];
 axios
   .post('https://overpass-api.de/api/interpreter', queryOverPass)
   .then(({ data }) => {
-    data.elements.map((element: {lat: number, lon: number, id: number, tags: {
-        alt_name: string, name: string, ele: number
-      }}) => {
-        marker([element.lat, element.lon]).addTo(mymap).bindPopup(
-            (element.tags && element.tags.name && element.tags.ele) ? `${element.tags.name} (${element.tags.ele}m)` : String(element.id)
+    data.elements.map(
+      (element: {
+        lat: number;
+        lon: number;
+        id: number;
+        tags: {
+          alt_name: string;
+          name: string;
+          ele: number;
+        };
+      }) => {
+        marker([element.lat, element.lon])
+          .addTo(mymap)
+          .bindPopup(
+            element.tags && element.tags.name && element.tags.ele
+              ? `${element.tags.name} (${element.tags.ele}m)`
+              : String(element.id)
           ); // AQUÍ ES DONDE EVALUAMOS SI EXISTE LA INFORMACIÓN Y LA ASIGNAMOS
-      // Almacenar los resultados
-      results.push({ lat: element.lat, lon: element.lon });
-    });
+        // Almacenar los resultados
+        results.push({ lat: element.lat, lon: element.lon });
+      }
+    );
 
     // Centrar cámara en base a los resultados
     mymap.fitBounds([
