@@ -5,33 +5,36 @@ import { tileLayerSelect } from '../config/functions';
 import { boundsData } from './bounds-control';
 import { PLACES_LIST_LOCATIONS } from './locations';
 
-
 startMapTemplate(document, 'Plantilla - Mapa con Typescript');
 
-const mymap = new Map('map').setView(PLACES_LIST_LOCATIONS.HONOLULU_HAWAI_EEUU as [number, number], 13);
+const mymap = new Map('map').setView(
+  PLACES_LIST_LOCATIONS.HONOLULU_HAWAI_EEUU as [number, number],
+  13
+);
 
 // Data to add in control
 const mapBounds = {
-    northEast: {
-        lat: mymap.getBounds().getNorthEast().lat,
-        lng: mymap.getBounds().getNorthEast().lng
-    },
-    southWest: {
-        lat: mymap.getBounds().getSouthWest().lat,
-        lng: mymap.getBounds().getSouthWest().lng
-    },
+  northEast: {
+    lat: mymap.getBounds().getNorthEast().lat,
+    lng: mymap.getBounds().getNorthEast().lng,
+  },
+  southWest: {
+    lat: mymap.getBounds().getSouthWest().lat,
+    lng: mymap.getBounds().getSouthWest().lng,
+  },
 };
 
-console.log(`${mapBounds.southWest.lat},${mapBounds.southWest.lng},${mapBounds.northEast.lat}, ${mapBounds.northEast.lng}`);
+console.log(
+  `${mapBounds.southWest.lat},${mapBounds.southWest.lng},${mapBounds.northEast.lat}, ${mapBounds.northEast.lng}`
+);
 
 boundsData({
-    bounds: mapBounds
+  bounds: mapBounds,
 }).addTo(mymap);
 
 tileLayerSelect().addTo(mymap);
 
-const queryOverPass = 
-`[out:json][timeout:25];
+const queryOverPass = `[out:json][timeout:25];
   area(id:3602851736)->.searchArea;
   (
   node["natural"="peak"](area.searchArea);
@@ -40,10 +43,21 @@ const queryOverPass =
   );
   out body;`;
 
-  axios
-  .post("https://overpass-api.de/api/interpreter", queryOverPass)
+const results: Array<{ lat: number; lon: number }> = [];
+
+axios
+  .post('https://overpass-api.de/api/interpreter', queryOverPass)
   .then(({ data }) => {
-    data.elements.map((element: {lat: number, lon: number, id: number}) => {
-      marker([element.lat, element.lon]).addTo(mymap).bindPopup(String(element.id));
-    })
+    data.elements.map((element: { lat: number; lon: number; id: number }) => {
+      marker([element.lat, element.lon])
+        .addTo(mymap)
+        .bindPopup(String(element.id));
+      // Almacenar los resultados
+      results.push({ lat: element.lat, lon: element.lon });
+    });
+
+    // Centrar cámara en base a los resultados
+    mymap.fitBounds([
+      ...results.map((point) => [point.lat, point.lon] as [number, number]),
+    ]);
   });
