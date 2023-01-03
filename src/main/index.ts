@@ -1,15 +1,15 @@
 import axios from 'axios';
-import { Map, marker } from 'leaflet';
+import { Map, marker, MarkerClusterGroup } from 'leaflet';
+import 'leaflet.markercluster';
 import { startMapTemplate } from '../assets/template/content';
 import { tileLayerSelect } from '../config/functions';
 import { boundsData } from './bounds-control';
-import { PLACES_LIST_LOCATIONS } from './locations';
 
 startMapTemplate(document, 'Plantilla - Mapa con Typescript');
 
 const mymap = new Map('map').setView(
-  PLACES_LIST_LOCATIONS.HONOLULU_HAWAI_EEUU as [number, number],
-  13
+  [43.13352167963092, -2.1722224000000168],
+  10
 );
 
 // Data to add in control
@@ -23,10 +23,6 @@ const mapBounds = {
     lng: mymap.getBounds().getSouthWest().lng,
   },
 };
-
-console.log(
-  `${mapBounds.southWest.lat},${mapBounds.southWest.lng},${mapBounds.northEast.lat}, ${mapBounds.northEast.lng}`
-);
 
 boundsData({
   bounds: mapBounds,
@@ -42,6 +38,9 @@ const queryOverPass = `[out:json][timeout:25];
   relation["natural"="peak"](area.searchArea);
   );
   out body;`;
+
+// add new layer to group markers
+const markersLayer = new MarkerClusterGroup();
 
 const results: Array<{ lat: number; lon: number }> = [];
 
@@ -60,7 +59,7 @@ axios
         };
       }) => {
         marker([element.lat, element.lon])
-          .addTo(mymap)
+          .addTo(markersLayer)
           .bindPopup(
             element.tags && element.tags.name && element.tags.ele
               ? `${element.tags.name} (${element.tags.ele}m)`
@@ -70,6 +69,8 @@ axios
         results.push({ lat: element.lat, lon: element.lon });
       }
     );
+
+    markersLayer.addTo(mymap);
 
     // Centrar cámara en base a los resultados
     mymap.fitBounds([
