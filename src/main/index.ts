@@ -32,7 +32,7 @@ tileLayerSelect().addTo(mymap);
 
 const queryOverPass = 
 `[out:json][timeout:25];
-  area(id:3600346457)->.searchArea;
+  area(id:3602851736)->.searchArea;
   (
   node["natural"="peak"](area.searchArea);
   way["natural"="peak"](area.searchArea);
